@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DISTRIBUTION | TIMERIK RECORDS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --main-red: #ff0000; --bg-dark: #000; --input-bg: #0a0a0a; --border: #222; }
+        body { background-color: var(--bg-dark); color: #fff; font-family: 'Inter', sans-serif; margin: 0; padding: 20px; text-transform: uppercase; }
+        .container { max-width: 700px; margin: 0 auto; background: #050505; padding: 30px; border: 1px solid var(--border); }
+        h1 { font-family: 'Dela Gothic One', cursive; color: var(--main-red); font-size: 1.8rem; text-align: center; margin-bottom: 30px; }
+        form { display: flex; flex-direction: column; gap: 20px; }
+        .field-group { display: flex; flex-direction: column; gap: 8px; }
+        label { font-family: 'Dela Gothic One', cursive; font-size: 0.7rem; color: #888; }
+        input, select, textarea { background: var(--input-bg); border: 1px solid var(--border); padding: 15px; color: #fff; font-family: 'Inter', sans-serif; outline: none; width: 100%; box-sizing: border-box; }
+        input:focus, textarea:focus { border-color: var(--main-red); }
+        .row { display: flex; gap: 15px; }
+
+        /* Стиль галочки */
+        .promo-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border: 1px dashed var(--border);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .promo-checkbox-container.disabled { opacity: 0.3; cursor: not-allowed; }
+        input[type="checkbox"] { width: 25px; height: 25px; cursor: pointer; accent-color: var(--main-red); }
+        
+        /* Поле промо (скрыто по умолчанию) */
+        #promo-info-container { display: none; animation: slideDown 0.4s ease forwards; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        button { background-color: var(--main-red); color: #fff; border: none; padding: 20px; font-family: 'Dela Gothic One', cursive; font-size: 1.2rem; cursor: pointer; }
+        button:hover { background-color: #cc0000; }
+        @media (max-width: 600px) { .row { flex-direction: column; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ОТПРАВКА РЕЛИЗА</h1>
+        <form action="https://formspree.io/f/mzdarynv" method="POST" id="releaseForm">
+            <input type="hidden" name="_next" value="https://records.timerik.v6.navy/end.html">
+
+            <div class="row">
+                <div class="field-group" style="flex: 1;">
+                    <label>1) НАЗВАНИЕ РЕЛИЗА</label>
+                    <input type="text" name="release_title" placeholder="MONTAGEM NESTA" required>
+                </div>
+                <div class="field-group" style="flex: 1;">
+                    <label>2) АРТИСТ (-Ы)</label>
+                    <input type="text" name="artist_name" placeholder="SAYFAKE" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field-group">
+                    <label>3) ЖАНР</label>
+                    <input type="text" name="genre" placeholder="PHONK" required>
+                </div>
+                <div class="field-group">
+                    <label>7) ДАТА (ПУСТО = ASAP)</label>
+                    <input type="date" name="release_date" id="releaseDate">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="field-group"><label>4) КОМПОЗИТОР</label><input type="text" name="composer" required></div>
+                <div class="field-group"><label>5) АВТОР ТЕКСТА</label><input type="text" name="lyricist" placeholder="-"></div>
+            </div>
+
+            <div class="field-group">
+                <label>6) ПРОДЮСЕР</label>
+                <input type="text" name="producer" placeholder="-" required>
+            </div>
+
+            <div class="promo-checkbox-container disabled" id="promoToggleContainer">
+                <input type="checkbox" id="promoCheckbox" name="promo_request" disabled title="Сначала выберите дату">
+                <label style="color: #fff; cursor: pointer;">ХОТИТЕ ПРОМО? НАЖМИТЕ НА ГАЛОЧКУ!</label>
+            </div>
+
+            <div id="promo-info-container" class="field-group">
+                <label>ИНФОРМАЦИЯ О РЕЛИЗЕ И АРТИСТЕ ДЛЯ ПРОМО</label>
+                <textarea name="promo_info" rows="6" placeholder="НАПИШИТЕ ИСТОРИЮ ТРЕКА, ВАШИ СОЦСЕТИ И ПОЧЕМУ МЫ ДОЛЖНЫ ВАС ЗАПИТЧИТЬ..."></textarea>
+            </div>
+
+            <div class="field-group">
+                <label>8) ССЫЛКА НА АУДИО</label>
+                <input type="url" name="audio_link" required>
+            </div>
+            <div class="field-group">
+                <label>9) ССЫЛКА НА ОБЛОЖКУ (3000X3000)</label>
+                <input type="url" name="cover_link" required>
+            </div>
+            <div class="field-group">
+                <label>EMAIL</label>
+                <input type="email" name="email" required>
+            </div>
+
+            <button type="submit">ОТПРАВИТЬ РЕЛИЗ</button>
+        </form>
+    </div>
+
+    <script>
+        const dateInput = document.getElementById('releaseDate');
+        const promoToggle = document.getElementById('promoCheckbox');
+        const promoContainer = document.getElementById('promoToggleContainer');
+        const promoInfo = document.getElementById('promo-info-container');
+
+        // Логика даты и активации галочки
+        dateInput.addEventListener('change', () => {
+            if (dateInput.value) {
+                promoContainer.classList.remove('disabled');
+                promoToggle.disabled = false;
+            } else {
+                promoContainer.classList.add('disabled');
+                promoToggle.disabled = true;
+                promoToggle.checked = false;
+                promoInfo.style.display = 'none';
+            }
+        });
+
+        // Показ строки при нажатии
+        promoToggle.addEventListener('change', () => {
+            promoInfo.style.display = promoToggle.checked ? 'flex' : 'none';
+        });
+
+        // Если дата пустая при отправке — ставим ASAP
+        document.getElementById('releaseForm').onsubmit = function() {
+            if (!dateInput.value) {
+                const hiddenASAP = document.createElement('input');
+                hiddenASAP.type = 'hidden';
+                hiddenASAP.name = 'release_date_asap';
+                hiddenASAP.value = 'ASAP';
+                this.appendChild(hiddenASAP);
+            }
+        };
+    </script>
+</body>
+</html>
