@@ -5,175 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRCS | TIMERIK RECORDS SYSTEM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #ff00ea; --secondary: #ff3b30; --bg-dark: #050505;
-            --surface: #121212; --surface-light: #1c1c1c; --border-color: #333;
-            --text-main: #ffffff; --text-muted: #888888;
-        }
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-main); overflow-x: hidden; }
-        * { box-sizing: border-box; transition: 0.2s ease-in-out; }
+        :root { --secondary: #ff3b30; --bg: #050505; --card: #121212; --text-muted: #888; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: #fff; scroll-behavior: smooth; }
         
         nav {
-            position: fixed; top: 0; width: 100%; background: rgba(5,5,5,0.95); backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color); z-index: 1000; display: flex; justify-content: space-between;
+            position: fixed; top: 0; width: 100%; background: rgba(5,5,5,0.9); backdrop-filter: blur(10px);
+            border-bottom: 1px solid #222; z-index: 1000; display: flex; justify-content: space-between;
             align-items: center; padding: 15px 40px;
         }
-        .logo { font-family: 'Dela Gothic One'; font-size: 24px; cursor: pointer; letter-spacing: 1px; text-decoration: none; color: #fff; }
+        .logo { font-family: 'Dela Gothic One'; font-size: 24px; text-decoration: none; color: #fff; }
         .logo span { color: var(--secondary); }
-        .nav-links { display: flex; gap: 20px; align-items: center; }
-        .nav-link { color: var(--text-muted); text-decoration: none; font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; }
-        .nav-link:hover, .nav-link.active-link { color: #fff; }
-        .btn-login { border: 2px solid #fff; color: #fff; padding: 8px 15px; border-radius: 6px; font-weight: 800; cursor: pointer; background: transparent; font-size: 11px; }
-        .btn-login:hover { background: #fff; color: #000; }
-
-        .page-section { display: none; padding-top: 100px; min-height: 100vh; animation: fadeIn 0.3s ease; }
-        .page-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-        .section-title { font-family: 'Dela Gothic One'; font-size: 32px; margin-bottom: 40px; text-transform: uppercase; text-align: center; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
-        .card { background: var(--surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; }
-
-        .btn-tg { 
-            width: 100%; padding: 15px; background: #0088cc; color: #fff; border: none; border-radius: 8px; 
-            font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
-            text-decoration: none; margin-top: 20px; font-size: 14px;
-        }
-        .btn-tg:hover { background: #00aaff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4); }
+        .nav-links { display: flex; gap: 25px; }
+        .nav-link { color: var(--text-muted); text-decoration: none; font-weight: 700; font-size: 13px; text-transform: uppercase; transition: 0.3s; }
+        .nav-link:hover { color: #fff; }
         
-        .btn-release {
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
-            color: #fff; padding: 25px; border-radius: 12px; font-weight: 900; text-transform: uppercase;
-            display: flex; align-items: center; justify-content: center; gap: 15px; cursor: pointer; border: none; width: 100%;
-            font-size: 18px; margin-bottom: 30px; text-decoration: none;
-        }
-        .btn-release:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 59, 48, 0.4); }
+        .btn-portal { border: 2px solid #fff; color: #fff; padding: 8px 20px; border-radius: 6px; font-weight: 800; text-decoration: none; font-size: 11px; transition: 0.3s; }
+        .btn-portal:hover { background: #fff; color: #000; }
 
-        input, textarea { width: 100%; padding: 14px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 15px; outline: none; }
+        .section { padding: 120px 20px; min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .container { max-width: 1100px; width: 100%; }
+        
+        /* saySTORE */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
+        .card { background: var(--card); border: 1px solid #222; border-radius: 16px; padding: 40px; text-align: center; }
+        .btn-tg { background: #0088cc; color: #fff; text-decoration: none; padding: 15px; border-radius: 8px; display: block; margin-top: 20px; font-weight: 900; }
+
+        .title { font-family: 'Dela Gothic One'; font-size: clamp(32px, 8vw, 64px); text-align: center; margin: 0; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
 <nav>
-    <a href="#" class="logo" onclick="switchPage('home')">TR<span>CS</span></a>
+    <a href="#home" class="logo">TR<span>CS</span></a>
     <div class="nav-links">
-        <a class="nav-link active-link" id="nav-home" onclick="switchPage('home')">Главная</a>
-        <a class="nav-link" id="nav-store" onclick="switchPage('store')">saySTORE</a>
-        <a class="nav-link" href="https://label.timerik.v6.navy/analytics" target="_blank">Аналитика</a>
-        <a class="nav-link" id="nav-contact" onclick="switchPage('contact')">Контакты</a>
-        <button class="btn-login" onclick="switchPage('dashboard')">КАБИНЕТ</button>
+        <a href="#home" class="nav-link">Главная</a>
+        <a href="#store" class="nav-link">saySTORE</a>
+        <a href="#contact" class="nav-link">Контакт</a>
     </div>
+    <a href="dashboard.html" class="btn-portal">ЛИЧНЫЙ КАБИНЕТ</a>
 </nav>
 
-<div id="home" class="page-section active">
-    <div class="container" style="text-align: center; padding-top: 60px;">
-        <h1 style="font-family: 'Dela Gothic One'; font-size: 60px; margin: 0;">TIMERIK <span style="color:var(--secondary)">RECORDS</span></h1>
-        <p style="color: var(--text-muted); font-size: 18px; max-width: 600px; margin: 20px auto 50px;">Инфраструктура для независимых артистов. Дистрибуция и сервисы в экосистеме PrenixSound.</p>
-        
-        <div class="grid" style="max-width: 800px; margin: 0 auto;">
-            <div class="card">
-                <h3>START</h3>
-                <div style="font-size: 32px; font-weight: 900; margin: 15px 0;">0₽</div>
-                <p style="color: var(--text-muted); font-size: 14px;">Стандартная отгрузка на площадки. Идеально для начала пути.</p>
-                <button class="btn-tg" style="background: #333;" onclick="switchPage('dashboard')">ВОЙТИ В СИСТЕМУ</button>
-            </div>
-            <div class="card" style="border-color: var(--secondary);">
-                <h3>PRO LABEL</h3>
-                <div style="font-size: 32px; font-weight: 900; margin: 15px 0;">ДОГОВОРНОЙ %</div>
-                <p style="color: var(--text-muted); font-size: 14px;">Приоритетная поддержка, промо-сервисы и полная прозрачность.</p>
-                <a href="https://t.me/PRENIKS" target="_blank" class="btn-tg"><i class="fab fa-telegram-plane"></i> СТАТЬ РЕЗИДЕНТОМ</a>
-            </div>
-        </div>
+<section id="home" class="section">
+    <div class="container" style="text-align: center;">
+        <h1 class="title">TIMERIK <br><span style="color: var(--secondary);">RECORDS</span></h1>
+        <p style="color: var(--text-muted); font-size: 18px; margin-top: 20px;">Независимая музыкальная инфраструктура для артистов нового поколения.</p>
     </div>
-</div>
+</section>
 
-<div id="store" class="page-section">
+<section id="store" class="section" style="background: #080808;">
     <div class="container">
-        <h2 class="section-title">saySTORE</h2>
+        <h2 class="title" style="font-size: 40px;">saySTORE</h2>
         <div class="grid">
             <div class="card">
-                <i class="fas fa-compact-disc" style="font-size: 30px; color: var(--secondary)"></i>
-                <h3 style="margin: 15px 0 5px;">ЭКСКЛЮЗИВНЫЕ БИТЫ</h3>
-                <div style="font-size: 24px; font-weight: 900;">от 2,500₽</div>
-                <a href="https://t.me/PRENIKS" target="_blank" class="btn-tg"><i class="fab fa-telegram-plane"></i> КУПИТЬ В TELEGRAM</a>
+                <i class="fas fa-compact-disc" style="font-size: 40px; color: var(--secondary);"></i>
+                <h3>BEATS</h3>
+                <p style="color: var(--text-muted);">Эксклюзивные права на звук.</p>
+                <a href="https://t.me/PRENIKS" class="btn-tg">КУПИТЬ В ТГ</a>
             </div>
             <div class="card">
-                <i class="fas fa-sliders-h" style="font-size: 30px; color: var(--primary)"></i>
-                <h3 style="margin: 15px 0 5px;">СВЕДЕНИЕ И МАСТЕР</h3>
-                <div style="font-size: 24px; font-weight: 900;">от 3,000₽</div>
-                <a href="https://t.me/PRENIKS" target="_blank" class="btn-tg"><i class="fab fa-telegram-plane"></i> ЗАКАЗАТЬ УСЛУГУ</a>
+                <i class="fas fa-wave-square" style="font-size: 40px; color: #fff;"></i>
+                <h3>MIXING</h3>
+                <p style="color: var(--text-muted);">Профессиональное сведение под площадки.</p>
+                <a href="https://t.me/PRENIKS" class="btn-tg">ЗАКАЗАТЬ</a>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<div id="contact" class="page-section">
-    <div class="container" style="max-width: 600px;">
-        <h2 class="section-title">СВЯЗЬ</h2>
-        <div class="card" style="text-align: center;">
-            <p style="color: var(--text-muted); margin-bottom: 30px;">По вопросам сотрудничества, покупки услуг или техподдержки пишите в Telegram:</p>
-            <a href="https://t.me/PRENIKS" target="_blank" class="btn-tg" style="font-size: 18px; padding: 20px;">
-                <i class="fab fa-telegram-plane"></i> @PRENIKS
-            </a>
-            <p style="margin-top: 30px; font-size: 12px; color: #444;">TRCS v2.5 | Powered by PrenixSound</p>
-        </div>
+<section id="contact" class="section">
+    <div class="container" style="text-align: center;">
+        <h2 class="title" style="font-size: 40px;">КОНТАКТ</h2>
+        <p style="color: var(--text-muted); margin-bottom: 40px;">По всем вопросам сотрудничества пиши напрямую:</p>
+        <a href="https://t.me/PRENIKS" style="font-size: 32px; color: #fff; text-decoration: none; font-weight: 900;">@PRENIKS</a>
+        <div style="margin-top: 60px; font-size: 12px; color: #333;">TRCS v2.6 | 2026</div>
     </div>
-</div>
-
-<div id="dashboard" class="page-section">
-    <div class="container">
-        <div id="auth-box" class="card" style="max-width: 400px; margin: 0 auto; text-align: center;">
-            <h2 style="font-family: 'Dela Gothic One'; margin-top: 0;">ВХОД</h2>
-            <input type="email" id="u-email" placeholder="Artist Email">
-            <input type="password" placeholder="Password">
-            <button class="btn-tg" style="background: #fff; color: #000;" onclick="mockLogin()">ВОЙТИ</button>
-        </div>
-
-        <div id="user-panel" style="display: none;">
-            <a href="https://label.timerik.v6.navy/label/upload/form" target="_blank" class="btn-release">
-                <i class="fas fa-cloud-upload-alt"></i> ОТПРАВИТЬ НОВЫЙ РЕЛИЗ
-            </a>
-            
-            <div class="grid" style="grid-template-columns: 1.5fr 1fr;">
-                <div class="card">
-                    <h3 style="margin-top:0">SMARTLINK GENERATOR</h3>
-                    <p style="font-size: 12px; color: var(--text-muted);">Создайте страницу для вашего трека.</p>
-                    <input type="text" placeholder="Название релиза">
-                    <textarea placeholder="Ссылки (Яндекс, Apple, Spotify...)" rows="3"></textarea>
-                    <button class="btn-tg" style="background: #333;" onclick="alert('Заявка принята в обработку')">СФОРМИРОВАТЬ</button>
-                </div>
-                <div class="card">
-                    <h3 style="margin-top:0">СТАТУС</h3>
-                    <div style="background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px solid #333;">
-                        <p style="margin: 0; font-weight: 800; color: var(--secondary);">НЕТ АКТИВНЫХ ЗАЯВОК</p>
-                        <p style="font-size: 11px; color: #555; margin-top: 5px;">Все ваши релизы появятся здесь после модерации.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    function switchPage(pageId) {
-        document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active-link'));
-        document.getElementById(pageId).classList.add('active');
-        if(document.getElementById('nav-' + pageId)) document.getElementById('nav-' + pageId).classList.add('active-link');
-        window.scrollTo(0, 0);
-    }
-
-    function mockLogin() {
-        const email = document.getElementById('u-email').value;
-        if(email.includes('@')) {
-            document.getElementById('auth-box').style.display = 'none';
-            document.getElementById('user-panel').style.display = 'block';
-        } else { alert('Введите Email артиста'); }
-    }
-</script>
+</section>
 
 </body>
 </html>
