@@ -3,96 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRCS | TIMERIK RECORDS & saySTORE</title>
-    
+    <title>TRCS | TIMERIK RECORDS SYSTEM</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
-        /* === БАЗОВЫЕ НАСТРОЙКИ === */
         :root {
-            --primary: #ff00ea; /* МЕЧТА */
-            --secondary: #ff3b30; /* POZHARNIK */
-            --bg-dark: #050505;
-            --surface: #121212;
-            --border-color: #2a2a2a;
-            --text-main: #ffffff;
-            --text-muted: #888888;
+            --primary: #ff00ea; --secondary: #ff3b30; --bg-dark: #050505;
+            --surface: #121212; --surface-light: #1c1c1c; --border-color: #333;
+            --text-main: #ffffff; --text-muted: #888888;
         }
-
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-main); }
-        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-main); overflow-x: hidden; }
+        * { box-sizing: border-box; transition: 0.2s ease-in-out; }
         
-        /* === НАВИГАЦИЯ === */
         nav {
-            position: fixed; top: 0; width: 100%; background: rgba(5,5,5,0.9); backdrop-filter: blur(10px);
+            position: fixed; top: 0; width: 100%; background: rgba(5,5,5,0.95); backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-color); z-index: 1000; display: flex; justify-content: space-between;
             align-items: center; padding: 15px 40px;
         }
-        .logo { font-family: 'Dela Gothic One'; font-size: 24px; color: var(--text-main); cursor: pointer; }
-        .logo span { color: var(--primary); }
-        .nav-links { display: flex; gap: 30px; align-items: center; }
-        .nav-link { color: var(--text-main); text-decoration: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        .nav-link:hover { color: var(--primary); }
-        .btn-outline { border: 2px solid var(--primary); color: var(--primary); padding: 8px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; background: transparent; transition: 0.3s; }
-        .btn-outline:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+        .logo { font-family: 'Dela Gothic One'; font-size: 24px; cursor: pointer; letter-spacing: 1px; text-decoration: none; color: #fff; }
+        .logo span { color: var(--secondary); }
+        .nav-links { display: flex; gap: 20px; align-items: center; }
+        .nav-link { color: var(--text-muted); text-decoration: none; font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; }
+        .nav-link:hover, .nav-link.active-link { color: #fff; }
+        .btn-login { border: 2px solid #fff; color: #fff; padding: 8px 15px; border-radius: 6px; font-weight: 800; cursor: pointer; background: transparent; font-size: 11px; }
+        .btn-login:hover { background: #fff; color: #000; }
 
-        /* === SPA ЛОГИКА === */
-        .page-section { display: none; padding-top: 80px; min-height: 100vh; animation: fadeIn 0.4s ease; }
+        .page-section { display: none; padding-top: 100px; min-height: 100vh; animation: fadeIn 0.3s ease; }
         .page-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* === UI ЭЛЕМЕНТЫ === */
-        .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
-        .section-title { font-family: 'Dela Gothic One'; font-size: 36px; text-align: center; margin-bottom: 50px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .card { background: var(--surface); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; transition: 0.3s; }
-        .card:hover { border-color: var(--secondary); transform: translateY(-5px); }
-        .btn-full { width: 100%; padding: 15px; background: var(--secondary); border: none; color: #fff; font-weight: 900; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase;}
-        .btn-full:hover { background: var(--primary); }
-        input, textarea { width: 100%; padding: 15px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 15px; font-family: 'Inter'; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+        .section-title { font-family: 'Dela Gothic One'; font-size: 32px; margin-bottom: 40px; text-transform: uppercase; text-align: center; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .card { background: var(--surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; }
 
-        /* === ГЛАВНЫЙ ЭКРАН === */
-        .hero { text-align: center; padding: 100px 20px 50px; background: radial-gradient(circle at top, #200, var(--bg-dark) 60%); }
-        .hero h1 { font-family: 'Dela Gothic One'; font-size: 64px; margin: 0; line-height: 1; text-transform: uppercase;}
-        .stats-badge { background: rgba(255,0,234,0.1); border: 1px solid var(--primary); color: var(--primary); padding: 10px 25px; border-radius: 50px; font-weight: 800; display: inline-block; margin-bottom: 20px; }
+        .btn-tg { 
+            width: 100%; padding: 15px; background: #0088cc; color: #fff; border: none; border-radius: 8px; 
+            font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+            text-decoration: none; margin-top: 20px; font-size: 14px;
+        }
+        .btn-tg:hover { background: #00aaff; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4); }
+        
+        .btn-release {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: #fff; padding: 25px; border-radius: 12px; font-weight: 900; text-transform: uppercase;
+            display: flex; align-items: center; justify-content: center; gap: 15px; cursor: pointer; border: none; width: 100%;
+            font-size: 18px; margin-bottom: 30px; text-decoration: none;
+        }
+        .btn-release:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(255, 59, 48, 0.4); }
+
+        input, textarea { width: 100%; padding: 14px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 15px; outline: none; }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo" onclick="switchPage('home')">TR<span>CS</span></div>
+    <a href="#" class="logo" onclick="switchPage('home')">TR<span>CS</span></a>
     <div class="nav-links">
-        <a class="nav-link" onclick="switchPage('home')">Главная</a>
-        <a class="nav-link" onclick="switchPage('store')">saySTORE</a>
-        <button class="btn-outline" onclick="switchPage('dashboard')">ЛИЧНЫЙ КАБИНЕТ</button>
+        <a class="nav-link active-link" id="nav-home" onclick="switchPage('home')">Главная</a>
+        <a class="nav-link" id="nav-store" onclick="switchPage('store')">saySTORE</a>
+        <a class="nav-link" href="https://label.timerik.v6.navy/analytics" target="_blank">Аналитика</a>
+        <a class="nav-link" id="nav-contact" onclick="switchPage('contact')">Контакты</a>
+        <button class="btn-login" onclick="switchPage('dashboard')">КАБИНЕТ</button>
     </div>
 </nav>
 
 <div id="home" class="page-section active">
-    <div class="hero">
-        <div class="stats-badge"><i class="fas fa-fire"></i> 1 380 532 слушателей за месяц</div>
-        <h1>TIMERIK<br><span style="color: var(--secondary);">RECORDS</span></h1>
-        <p style="color: var(--text-muted); font-size: 18px; max-width: 600px; margin: 20px auto;">Дистрибуция, продвижение и создание инфраструктуры для независимых артистов. Присоединяйся к PrenixSound.</p>
-    </div>
-
-    <div class="container">
-        <h2 class="section-title">ТАРИФЫ ЛЕЙБЛА</h2>
-        <div class="grid">
-            <div class="card" style="text-align: center;">
-                <h3 style="font-family: 'Dela Gothic One'; font-size: 24px; margin:0;">FREE</h3>
-                <div style="font-size: 48px; font-weight: 900; margin: 20px 0;">0₽</div>
-                <p style="color: var(--text-muted); margin-bottom: 30px;">✓ Базовая дистрибуция<br>✓ Стандартный Smartlink<br>✓ Поддержка в Telegram</p>
-                <button class="btn-full" style="background: #333;">ВЫБРАТЬ</button>
+    <div class="container" style="text-align: center; padding-top: 60px;">
+        <h1 style="font-family: 'Dela Gothic One'; font-size: 60px; margin: 0;">TIMERIK <span style="color:var(--secondary)">RECORDS</span></h1>
+        <p style="color: var(--text-muted); font-size: 18px; max-width: 600px; margin: 20px auto 50px;">Инфраструктура для независимых артистов. Дистрибуция и сервисы в экосистеме PrenixSound.</p>
+        
+        <div class="grid" style="max-width: 800px; margin: 0 auto;">
+            <div class="card">
+                <h3>START</h3>
+                <div style="font-size: 32px; font-weight: 900; margin: 15px 0;">0₽</div>
+                <p style="color: var(--text-muted); font-size: 14px;">Стандартная отгрузка на площадки. Идеально для начала пути.</p>
+                <button class="btn-tg" style="background: #333;" onclick="switchPage('dashboard')">ВОЙТИ В СИСТЕМУ</button>
             </div>
-            <div class="card" style="text-align: center; border-color: var(--primary); position: relative;">
-                <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: 900; font-size: 12px;">ХИТ</div>
-                <h3 style="font-family: 'Dela Gothic One'; font-size: 24px; margin:0; color: var(--primary);">PRO</h3>
-                <div style="font-size: 48px; font-weight: 900; margin: 20px 0;">290</div>
-                <p style="color: var(--text-muted); margin-bottom: 30px;">✓ Расширенная аналитика<br>✓ Приоритетная модерация<br>✓ Кастомный дизайн ссылок</p>
-                <button class="btn-full" style="background: var(--primary); color: #000;">КУПИТЬ ТАРИФ</button>
+            <div class="card" style="border-color: var(--secondary);">
+                <h3>PRO LABEL</h3>
+                <div style="font-size: 32px; font-weight: 900; margin: 15px 0;">ДОГОВОРНОЙ %</div>
+                <p style="color: var(--text-muted); font-size: 14px;">Приоритетная поддержка, промо-сервисы и полная прозрачность.</p>
+                <a href="https://t.me/PRENIKS" target="_blank" class="btn-tg"><i class="fab fa-telegram-plane"></i> СТАТЬ РЕЗИДЕНТОМ</a>
             </div>
         </div>
     </div>
@@ -100,108 +92,87 @@
 
 <div id="store" class="page-section">
     <div class="container">
-        <h2 class="section-title" style="color: var(--secondary);">saySTORE</h2>
-        <p style="text-align: center; color: var(--text-muted); margin-bottom: 50px;">Эксклюзивные биты, сведение и разработка сайтов для артистов TRCS.</p>
-        
+        <h2 class="section-title">saySTORE</h2>
         <div class="grid">
             <div class="card">
-                <i class="fas fa-music" style="font-size: 40px; color: var(--secondary); margin-bottom: 20px;"></i>
-                <h3 style="margin: 0 0 10px; font-size: 22px; font-weight: 900;">BEATS</h3>
-                <p style="color: var(--text-muted);">Купить бит.</p>
-                <div style="font-size: 28px; font-weight: 900; margin-bottom: 20px;">130</div>
-                <button class="btn-full">В КОРЗИНУ</button>
+                <i class="fas fa-compact-disc" style="font-size: 30px; color: var(--secondary)"></i>
+                <h3 style="margin: 15px 0 5px;">ЭКСКЛЮЗИВНЫЕ БИТЫ</h3>
+                <div style="font-size: 24px; font-weight: 900;">от 2,500₽</div>
+                <a href="https://t.me/PRENIKS" target="_blank" class="btn-tg"><i class="fab fa-telegram-plane"></i> КУПИТЬ В TELEGRAM</a>
             </div>
             <div class="card">
-                <i class="fas fa-sliders-h" style="font-size: 40px; color: var(--secondary); margin-bottom: 20px;"></i>
-                <h3 style="margin: 0 0 10px; font-size: 22px; font-weight: 900;">СВЕДЕНИЕ И МАСТЕРИНГ</h3>
-                <p style="color: var(--text-muted);">Сделаем твой трек громким и чистым под стандарты Believe.</p>
-                <div style="font-size: 28px; font-weight: 900; margin-bottom: 20px;">200₽</div>
-                <button class="btn-full">ЗАКАЗАТЬ</button>
+                <i class="fas fa-sliders-h" style="font-size: 30px; color: var(--primary)"></i>
+                <h3 style="margin: 15px 0 5px;">СВЕДЕНИЕ И МАСТЕР</h3>
+                <div style="font-size: 24px; font-weight: 900;">от 3,000₽</div>
+                <a href="https://t.me/PRENIKS" target="_blank" class="btn-tg"><i class="fab fa-telegram-plane"></i> ЗАКАЗАТЬ УСЛУГУ</a>
             </div>
-            <div class="card">
-                <i class="fas fa-globe" style="font-size: 40px; color: var(--secondary); margin-bottom: 20px;"></i>
-                <h3 style="margin: 0 0 10px; font-size: 22px; font-weight: 900;">САЙТ АРТИСТА</h3>
-                <p style="color: var(--text-muted);">Личный промо-сайт на поддомене timerik.v6.navy.</p>
-                <div style="font-size: 28px; font-weight: 900; margin-bottom: 20px;">150₽</div>
-                <button class="btn-full">ОБСУДИТЬ ПРОЕКТ</button>
-            </div>
+        </div>
+    </div>
+</div>
+
+<div id="contact" class="page-section">
+    <div class="container" style="max-width: 600px;">
+        <h2 class="section-title">СВЯЗЬ</h2>
+        <div class="card" style="text-align: center;">
+            <p style="color: var(--text-muted); margin-bottom: 30px;">По вопросам сотрудничества, покупки услуг или техподдержки пишите в Telegram:</p>
+            <a href="https://t.me/PRENIKS" target="_blank" class="btn-tg" style="font-size: 18px; padding: 20px;">
+                <i class="fab fa-telegram-plane"></i> @PRENIKS
+            </a>
+            <p style="margin-top: 30px; font-size: 12px; color: #444;">TRCS v2.5 | Powered by PrenixSound</p>
         </div>
     </div>
 </div>
 
 <div id="dashboard" class="page-section">
     <div class="container">
-        
-        <div id="auth-box" style="max-width: 400px; margin: 0 auto; background: var(--surface); padding: 40px; border-radius: 16px; border: 1px solid var(--border-color);">
-            <h2 style="font-family: 'Dela Gothic One'; text-align: center; color: var(--primary);">ВХОД В TRCS</h2>
-            <p style="text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 30px;">Только для резидентов лейбла</p>
-            <input type="email" id="email" placeholder="Email артиста">
-            <input type="password" id="password" placeholder="Пароль">
-            <button class="btn-full" onclick="mockLogin()" style="background: var(--primary); color: #000;">ВОЙТИ</button>
+        <div id="auth-box" class="card" style="max-width: 400px; margin: 0 auto; text-align: center;">
+            <h2 style="font-family: 'Dela Gothic One'; margin-top: 0;">ВХОД</h2>
+            <input type="email" id="u-email" placeholder="Artist Email">
+            <input type="password" placeholder="Password">
+            <button class="btn-tg" style="background: #fff; color: #000;" onclick="mockLogin()">ВОЙТИ</button>
         </div>
 
         <div id="user-panel" style="display: none;">
-            <div style="background: linear-gradient(90deg, #111, #300); padding: 30px; border-radius: 16px; border-left: 5px solid var(--secondary); margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h2 style="margin: 0; font-family: 'Dela Gothic One';">С возвращением, <span id="artist-name">Artist</span>!</h2>
-                    <p style="color: var(--text-muted); margin: 10px 0 0;">Твои охваты: <strong style="color: #fff;">1 380 532 слушателей</strong></p>
-                </div>
-                <button onclick="logout()" style="background: transparent; color: #fff; border: 1px solid #555; padding: 10px 20px; border-radius: 8px; cursor: pointer;">ВЫЙТИ</button>
-            </div>
-
-            <div class="grid">
-                <div class="card" style="border-color: var(--secondary);">
-                    <h3 style="font-weight: 900; margin-top: 0;">ЗАЯВКА НА SMARTLINK</h3>
-                    <input type="text" id="trackName" placeholder="Название трека (например: POZHARNIK)">
-                    <input type="text" id="coverUrl" placeholder="Ссылка на обложку (URL)">
-                    <textarea id="links" placeholder="Ссылки на площадки (VK, Apple, Yandex)" rows="3"></textarea>
-                    <button class="btn-full" onclick="alert('Заявка отправлена на модерацию TRCS!')">ОТПРАВИТЬ АДМИНУ</button>
-                </div>
-
+            <a href="https://label.timerik.v6.navy/label/upload/form" target="_blank" class="btn-release">
+                <i class="fas fa-cloud-upload-alt"></i> ОТПРАВИТЬ НОВЫЙ РЕЛИЗ
+            </a>
+            
+            <div class="grid" style="grid-template-columns: 1.5fr 1fr;">
                 <div class="card">
+                    <h3 style="margin-top:0">SMARTLINK GENERATOR</h3>
+                    <p style="font-size: 12px; color: var(--text-muted);">Создайте страницу для вашего трека.</p>
+                    <input type="text" placeholder="Название релиза">
+                    <textarea placeholder="Ссылки (Яндекс, Apple, Spotify...)" rows="3"></textarea>
+                    <button class="btn-tg" style="background: #333;" onclick="alert('Заявка принята в обработку')">СФОРМИРОВАТЬ</button>
+                </div>
+                <div class="card">
+                    <h3 style="margin-top:0">СТАТУС</h3>
+                    <div style="background: #1a1a1a; padding: 20px; border-radius: 8px; border: 1px solid #333;">
+                        <p style="margin: 0; font-weight: 800; color: var(--secondary);">НЕТ АКТИВНЫХ ЗАЯВОК</p>
+                        <p style="font-size: 11px; color: #555; margin-top: 5px;">Все ваши релизы появятся здесь после модерации.</p>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
 <script>
-    // 1. Навигация между страницами (SPA)
     function switchPage(pageId) {
         document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active-link'));
         document.getElementById(pageId).classList.add('active');
+        if(document.getElementById('nav-' + pageId)) document.getElementById('nav-' + pageId).classList.add('active-link');
         window.scrollTo(0, 0);
     }
 
-    // 2. Временная заглушка для входа (Пока ты не вставишь ключи Supabase)
     function mockLogin() {
-        const email = document.getElementById('email').value;
-        if(email.length > 3) {
+        const email = document.getElementById('u-email').value;
+        if(email.includes('@')) {
             document.getElementById('auth-box').style.display = 'none';
             document.getElementById('user-panel').style.display = 'block';
-            document.getElementById('artist-name').innerText = email.split('@')[0].toUpperCase();
-        } else {
-            alert('Введи нормальный email, брат!');
-        }
+        } else { alert('Введите Email артиста'); }
     }
-
-    function logout() {
-        document.getElementById('auth-box').style.display = 'block';
-        document.getElementById('user-panel').style.display = 'none';
-        document.getElementById('email').value = '';
-        document.getElementById('password').value = '';
-    }
-
-    /* === ИНСТРУКЦИЯ ДЛЯ SUPABASE ===
-    Когда будешь готов подключить базу данных, раскомментируй код ниже 
-    и вставь свои ключи из настроек Supabase (Settings -> API)
-    
-    const supabaseUrl = 'ТВОЙ_URL_ИЗ_SUPABASE';
-    const supabaseKey = 'ТВОЙ_ANON_KEY';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-    */
 </script>
 
 </body>
