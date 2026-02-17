@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRCS | Личная Аналитика</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <style>
+        :root { --primary: #ff00ea; --secondary: #ff3b30; --bg: #050505; --card: #121212; }
+        body { background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; margin: 0; }
+        .nav { padding: 20px 40px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        
+        /* КАРТОЧКИ С ЦИФРАМИ */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-card { background: var(--card); padding: 30px; border-radius: 16px; border: 1px solid #222; }
+        .stat-card h3 { margin: 0; color: #888; font-size: 14px; text-transform: uppercase; }
+        .stat-val { font-size: 36px; font-weight: 900; margin: 10px 0; font-family: 'Dela Gothic One'; }
+        .stat-val span { color: var(--secondary); font-size: 18px; }
+
+        /* ВЫВОД СРЕДСТВ */
+        .withdraw-section { background: linear-gradient(135deg, #1a1a1a, #0a0a0a); padding: 40px; border-radius: 20px; border: 1px solid var(--primary); margin-top: 40px; }
+        input, select { background: #000; border: 1px solid #333; color: #fff; padding: 15px; border-radius: 8px; width: 100%; margin: 10px 0; }
+        .btn-pay { background: var(--primary); color: #fff; border: none; padding: 15px 30px; border-radius: 8px; font-weight: 900; cursor: pointer; width: 100%; }
+        .btn-pay:hover { filter: brightness(1.2); }
+
+        .chart-container { background: var(--card); padding: 20px; border-radius: 16px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="nav">
+    <div style="font-family: 'Dela Gothic One'; font-size: 20px;">TR<span>CS</span> ANALYTICS</div>
+    <a href="index.html" style="color: #888; text-decoration: none;">Вернуться в кабинет</a>
+</div>
+
+<div class="container">
+    <h1 style="font-family: 'Dela Gothic One';">МОЯ СТАТИСТИКА</h1>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Доступно к выводу</h3>
+            <div class="stat-val" id="balance">0.00 <span>₽</span></div>
+        </div>
+        <div class="stat-card">
+            <h3>Прослушивания (Всего)</h3>
+            <div class="stat-val" id="streams">0</div>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="streamsChart"></canvas>
+    </div>
+
+    <div class="withdraw-section">
+        <h2 style="margin-top:0;">ВЫПЛАТА РОЯЛТИ</h2>
+        <p style="color: #888;">Минимальная сумма вывода: 500 ₽</p>
+        <input type="number" id="amount" placeholder="Сумма (₽)">
+        <select id="method">
+            <option value="card">Банковская карта (РФ)</option>
+            <option value="crypto">USDT (TRC-20)</option>
+        </select>
+        <button class="btn-pay" onclick="requestPayout()">ПОДАТЬ ЗАЯВКУ НА ВЫВОД</button>
+    </div>
+</div>
+
+<script>
+    // ВСТАВЬ СВОИ ДАННЫЕ ИЗ SUPABASE
+    const SUPABASE_URL = 'ТВОЙ_URL';
+    const SUPABASE_KEY = 'ТВОЙ_ANON_KEY';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function loadArtistData() {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+            alert("Нужно войти в аккаунт!");
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // Грузим фин. данные
+        let { data, error } = await supabase
+            .from('artist_finances')
+            .select('*')
+            .eq('user_id', user.id)
+            .single();
+
+        if (data) {
+            document.getElementById('balance').innerText = `${data.balance} ₽`;
+            document.getElementById('streams').innerText = data.total_streams.toLocaleString();
+            renderChart(); // Рисуем график
+        }
+    }
+
+    async function requestPayout() {
+        const amount = document.getElementById('amount').value;
+        const method = document.getElementById('method').value;
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (amount < 500) {
+            alert("Брат, минималка 500 рублей. Поднажми на стримы!");
+            return;
+        }
+
+        const { error } = await supabase
+            .from('withdrawal_requests')
+            .insert([{ user_id: user.id, amount: amount, payment_method: method }]);
+
+        if (error) {
+            alert("Ошибка: " + error.message);
+        } else {
+            alert("Заявка принята! Деньги придут после проверки модератором.");
+        }
+    }
+
+    function renderChart() {
+        const ctx = document.getElementById('streamsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+                datasets: [{
+                    label: 'Стримы за неделю',
+                    data: [120, 190, 300, 500, 200, 300, 450], // Тут в будущем будут реальные данные
+                    borderColor: '#ff00ea',
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(255, 0, 234, 0.1)'
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+    }
+
+    loadArtistData();
+</script>
+
+</body>
+</html>
