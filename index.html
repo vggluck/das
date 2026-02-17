@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRCS | TIMERIK RECORDS & saySTORE</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* === БАЗОВЫЕ НАСТРОЙКИ === */
+        :root {
+            --primary: #ff00ea; /* МЕЧТА */
+            --secondary: #ff3b30; /* POZHARNIK */
+            --bg-dark: #050505;
+            --surface: #121212;
+            --border-color: #2a2a2a;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+        }
+
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg-dark); color: var(--text-main); }
+        * { box-sizing: border-box; }
+        
+        /* === НАВИГАЦИЯ === */
+        nav {
+            position: fixed; top: 0; width: 100%; background: rgba(5,5,5,0.9); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color); z-index: 1000; display: flex; justify-content: space-between;
+            align-items: center; padding: 15px 40px;
+        }
+        .logo { font-family: 'Dela Gothic One'; font-size: 24px; color: var(--text-main); cursor: pointer; }
+        .logo span { color: var(--primary); }
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-link { color: var(--text-main); text-decoration: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .nav-link:hover { color: var(--primary); }
+        .btn-outline { border: 2px solid var(--primary); color: var(--primary); padding: 8px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; background: transparent; transition: 0.3s; }
+        .btn-outline:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+
+        /* === SPA ЛОГИКА === */
+        .page-section { display: none; padding-top: 80px; min-height: 100vh; animation: fadeIn 0.4s ease; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* === UI ЭЛЕМЕНТЫ === */
+        .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px; }
+        .section-title { font-family: 'Dela Gothic One'; font-size: 36px; text-align: center; margin-bottom: 50px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .card { background: var(--surface); border: 1px solid var(--border-color); border-radius: 16px; padding: 30px; transition: 0.3s; }
+        .card:hover { border-color: var(--secondary); transform: translateY(-5px); }
+        .btn-full { width: 100%; padding: 15px; background: var(--secondary); border: none; color: #fff; font-weight: 900; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase;}
+        .btn-full:hover { background: var(--primary); }
+        input, textarea { width: 100%; padding: 15px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 8px; margin-bottom: 15px; font-family: 'Inter'; }
+
+        /* === ГЛАВНЫЙ ЭКРАН === */
+        .hero { text-align: center; padding: 100px 20px 50px; background: radial-gradient(circle at top, #200, var(--bg-dark) 60%); }
+        .hero h1 { font-family: 'Dela Gothic One'; font-size: 64px; margin: 0; line-height: 1; text-transform: uppercase;}
+        .stats-badge { background: rgba(255,0,234,0.1); border: 1px solid var(--primary); color: var(--primary); padding: 10px 25px; border-radius: 50px; font-weight: 800; display: inline-block; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo" onclick="switchPage('home')">TR<span>CS</span></div>
+    <div class="nav-links">
+        <a class="nav-link" onclick="switchPage('home')">Главная</a>
+        <a class="nav-link" onclick="switchPage('store')">saySTORE</a>
+        <button class="btn-outline" onclick="switchPage('dashboard')">ЛИЧНЫЙ КАБИНЕТ</button>
+    </div>
+</nav>
+
+<div id="home" class="page-section active">
+    <div class="hero">
+        <div class="stats-badge"><i class="fas fa-fire"></i> 1 380 532 слушателей за месяц</div>
+        <h1>TIMERIK<br><span style="color: var(--secondary);">RECORDS</span></h1>
+        <p style="color: var(--text-muted); font-size: 18px; max-width: 600px; margin: 20px auto;">Дистрибуция, продвижение и создание инфраструктуры для независимых артистов. Присоединяйся к PrenixSound.</p>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title">ТАРИФЫ ЛЕЙБЛА</h2>
+        <div class="grid">
+            <div class="card" style="text-align: center;">
+                <h3 style="font-family: 'Dela Gothic One'; font-size: 24px; margin:0;">FREE</h3>
+                <div style="font-size: 48px; font-weight: 900; margin: 20px 0;">0₽</div>
+                <p style="color: var(--text-muted); margin-bottom: 30px;">✓ Базовая дистрибуция<br>✓ Стандартный Smartlink<br>✓ Поддержка в Telegram</p>
+                <button class="btn-full" style="background: #333;">ВЫБРАТЬ</button>
+            </div>
+            <div class="card" style="text-align: center; border-color: var(--primary); position: relative;">
+                <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 5px 15px; border-radius: 20px; font-weight: 900; font-size: 12px;">ХИТ</div>
+                <h3 style="font-family: 'Dela Gothic One'; font-size: 24px; margin:0; color: var(--primary);">PRO</h3>
+                <div style="font-size: 48px; font-weight: 900; margin: 20px 0;">1,490₽</div>
+                <p style="color: var(--text-muted); margin-bottom: 30px;">✓ Расширенная аналитика<br>✓ Приоритетная модерация<br>✓ Кастомный дизайн ссылок</p>
+                <button class="btn-full" style="background: var(--primary); color: #000;">КУПИТЬ ТАРИФ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="store" class="page-section">
+    <div class="container">
+        <h2 class="section-title" style="color: var(--secondary);">saySTORE</h2>
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 50px;">Эксклюзивные биты, сведение и разработка сайтов для артистов TRCS.</p>
+        
+        <div class="grid">
+            <div class="card">
+                <i class="fas fa-music" style="font-size: 40px; color: var(--secondary); margin-bottom: 20px;"></i>
+                <h3 style="margin: 0 0 10px; font-size: 22px; font-weight: 900;">POZHARNIK BEAT</h3>
+                <p style="color: var(--text-muted);">Bandit001 x AzerOne Type Beat. Эксклюзивные права.</p>
+                <div style="font-size: 28px; font-weight: 900; margin-bottom: 20px;">2,500₽</div>
+                <button class="btn-full">В КОРЗИНУ</button>
+            </div>
+            <div class="card">
+                <i class="fas fa-sliders-h" style="font-size: 40px; color: var(--secondary); margin-bottom: 20px;"></i>
+                <h3 style="margin: 0 0 10px; font-size: 22px; font-weight: 900;">СВЕДЕНИЕ И МАСТЕРИНГ</h3>
+                <p style="color: var(--text-muted);">Сделаем твой трек громким и чистым под стандарты Believe.</p>
+                <div style="font-size: 28px; font-weight: 900; margin-bottom: 20px;">3,000₽</div>
+                <button class="btn-full">ЗАКАЗАТЬ</button>
+            </div>
+            <div class="card">
+                <i class="fas fa-globe" style="font-size: 40px; color: var(--secondary); margin-bottom: 20px;"></i>
+                <h3 style="margin: 0 0 10px; font-size: 22px; font-weight: 900;">САЙТ АРТИСТА</h3>
+                <p style="color: var(--text-muted);">Личный промо-сайт на поддомене timerik.v6.navy.</p>
+                <div style="font-size: 28px; font-weight: 900; margin-bottom: 20px;">5,000₽</div>
+                <button class="btn-full">ОБСУДИТЬ ПРОЕКТ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="dashboard" class="page-section">
+    <div class="container">
+        
+        <div id="auth-box" style="max-width: 400px; margin: 0 auto; background: var(--surface); padding: 40px; border-radius: 16px; border: 1px solid var(--border-color);">
+            <h2 style="font-family: 'Dela Gothic One'; text-align: center; color: var(--primary);">ВХОД В TRCS</h2>
+            <p style="text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 30px;">Только для резидентов лейбла</p>
+            <input type="email" id="email" placeholder="Email артиста">
+            <input type="password" id="password" placeholder="Пароль">
+            <button class="btn-full" onclick="mockLogin()" style="background: var(--primary); color: #000;">ВОЙТИ</button>
+        </div>
+
+        <div id="user-panel" style="display: none;">
+            <div style="background: linear-gradient(90deg, #111, #300); padding: 30px; border-radius: 16px; border-left: 5px solid var(--secondary); margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 style="margin: 0; font-family: 'Dela Gothic One';">С возвращением, <span id="artist-name">Artist</span>!</h2>
+                    <p style="color: var(--text-muted); margin: 10px 0 0;">Твои охваты: <strong style="color: #fff;">1 380 532 слушателей</strong></p>
+                </div>
+                <button onclick="logout()" style="background: transparent; color: #fff; border: 1px solid #555; padding: 10px 20px; border-radius: 8px; cursor: pointer;">ВЫЙТИ</button>
+            </div>
+
+            <div class="grid">
+                <div class="card" style="border-color: var(--secondary);">
+                    <h3 style="font-weight: 900; margin-top: 0;">ЗАЯВКА НА SMARTLINK</h3>
+                    <input type="text" id="trackName" placeholder="Название трека (например: POZHARNIK)">
+                    <input type="text" id="coverUrl" placeholder="Ссылка на обложку (URL)">
+                    <textarea id="links" placeholder="Ссылки на площадки (VK, Apple, Yandex)" rows="3"></textarea>
+                    <button class="btn-full" onclick="alert('Заявка отправлена на модерацию TRCS!')">ОТПРАВИТЬ АДМИНУ</button>
+                </div>
+
+                <div class="card">
+                    <h3 style="font-weight: 900; margin-top: 0;">МОИ РЕЛИЗЫ</h3>
+                    <div style="background: #0a0a0a; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between;">
+                        <strong>POZHARNIK</strong> <span style="color: #4caf50;">Активен</span>
+                    </div>
+                    <div style="background: #0a0a0a; padding: 15px; border-radius: 8px; display: flex; justify-content: space-between;">
+                        <strong>МЕЧТА</strong> <span style="color: #4caf50;">Активен</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // 1. Навигация между страницами (SPA)
+    function switchPage(pageId) {
+        document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    // 2. Временная заглушка для входа (Пока ты не вставишь ключи Supabase)
+    function mockLogin() {
+        const email = document.getElementById('email').value;
+        if(email.length > 3) {
+            document.getElementById('auth-box').style.display = 'none';
+            document.getElementById('user-panel').style.display = 'block';
+            document.getElementById('artist-name').innerText = email.split('@')[0].toUpperCase();
+        } else {
+            alert('Введи нормальный email, брат!');
+        }
+    }
+
+    function logout() {
+        document.getElementById('auth-box').style.display = 'block';
+        document.getElementById('user-panel').style.display = 'none';
+        document.getElementById('email').value = '';
+        document.getElementById('password').value = '';
+    }
+
+    /* === ИНСТРУКЦИЯ ДЛЯ SUPABASE ===
+    Когда будешь готов подключить базу данных, раскомментируй код ниже 
+    и вставь свои ключи из настроек Supabase (Settings -> API)
+    
+    const supabaseUrl = 'ТВОЙ_URL_ИЗ_SUPABASE';
+    const supabaseKey = 'ТВОЙ_ANON_KEY';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    */
+</script>
+
+</body>
+</html>
